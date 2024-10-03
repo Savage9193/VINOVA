@@ -6,8 +6,8 @@ The Activity Tracker Agent is a Python-based program that runs in the background
 
 <b>Group Members: </b>  
 <b>Anjali Chaudhary (Group Leader)</b>  
-<b>Mohd shahvez tyagi </b>
-<b>Shaurya gahlot</b>
+<b>Mohd shahvez tyagi, </b>
+<b>Shaurya gahlot,</b>
 <b>Aditya gupta </b>
 
 <b>Features</b>
