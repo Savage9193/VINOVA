@@ -1,11 +1,14 @@
-from datetime import datetime
 import pytz
+from datetime import datetime
+from tzlocal import get_localzone  
+import time  
 
-def handle_time_zone():
+def handle_time_zone(gui):
+    local_tz = get_localzone() 
     current_time = datetime.now(pytz.utc)
-    print(f"Current time in UTC is {current_time}")
-
-    # Replace 'Asia/Kolkata' with your desired time zone
-    local_tz = pytz.timezone('Asia/Kolkata')
+    gui.log(f"Current time in UTC is {current_time}")
     localized_time = current_time.astimezone(local_tz)
-    print(f"Localized time: {localized_time}")
+    gui.log(f"Localized time: {localized_time}")
+    gui.log(f"Local time zone: {str(local_tz)}")  
+
+
