@@ -82,6 +82,7 @@ VINOVA/
 ├── screenshot_manager.py # No Need to Run manually. Managing --taking screenshot uploading to s3 aws and resize big photo and check blurred screenshot.
 ├── time_manager.py # No Need to Run manually. Manages timezone locally and UTC
 └── requirements.txt # List of project dependencies.
+<b>After succesfully run you have to login with username ="tyagi" then password =test and then enter your email for otp ...check your email and enter otp then you got UI to see agent woking ....</b>
 Code Patterns
 The project follows a modular design with the following patterns:
 
