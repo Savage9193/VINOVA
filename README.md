@@ -106,3 +106,4 @@ During startup, you can configure:
 - Screenshot capture interval
 
 
+In this license is attached please read license....
