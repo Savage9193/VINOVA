@@ -1,4 +1,4 @@
-<b>Activity Tracker Agent</b>
+Workstatus-Python-Agent
 Overview
 VINOVA is a comprehensive Python-based desktop application designed to monitor user activity, capture screenshots, and manage these activities securely. The application periodically captures screenshots, tracks keyboard and mouse activities, checks the battery status, and supports multi-factor authentication (MFA) for secure user login. It integrates with Amazon S3 to store screenshots and includes real-time configuration updates via a Flask-based API.
 
