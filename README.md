@@ -1,117 +1,89 @@
 <b>Activity Tracker Agent</b>
-
 Overview
-
-The Activity Tracker Agent is a Python-based program that runs in the background on a user's machine to track system activity. It captures screenshots at configurable intervals, tracks user inputs, and uploads activity data to AWS S3. It also monitors timezone changes and handles other configurable options such as blurring screenshots.
-
-<b>Group Members: </b>  
-<b>Anjali Chaudhary (Group Leader)</b>  
-<b>Mohd shahvez tyagi, </b>
-<b>Shaurya gahlot,</b>
-<b>Aditya gupta </b>
-
-<b>Features</b>
-
-Activity Tracking:
-
-Detect genuine user inputs and discard scripted activities (e.g., irregular mouse movement or unnatural keyboard inputs).
-Configurable Screenshot Intervals: Screenshots can be taken at configurable intervals (e.g., every 5 or 10 minutes). Users can enable/disable screenshots and toggle between blurred/unblurred captures.
-Time Zone Management: Detects timezone changes and updates logs accordingly.
-Cloud Data Upload: Automatically uploads screenshots and activity logs to AWS S3 with compression and encryption.
-Error Handling and Resilience: Robust error handling for scenarios like no internet connection, abrupt disconnection, or firewall restrictions.
-Instance Management: Prevents multiple instances of the agent from running simultaneously using a lock file.
-
-Libraries Used
-
-The following libraries are required to run the Activity Tracker Agent:
-
-Pillow: For taking screenshots and image processing (blurring, compression).
-Boto3: AWS SDK for Python to interface with AWS services like S3.
-Pytz: For timezone handling.
-Psutil: For tracking user activity such as CPU usage, memory, and disk IO.
-Logging: Native Python logging module for event logging.
-To install these dependencies, run:
-
-bash
-Copy code
-pip install -r requirements.txt
-AWS Platform Usage
-This project utilizes AWS S3 for cloud storage of screenshots. Here's a breakdown of how AWS services are integrated:
-
-Amazon S3:
-
-Stores the captured screenshots securely in the cloud.
-Uploaded files are compressed and encrypted before storage.
-Provides a scalable storage solution for managing large data uploads.
-IAM (Identity and Access Management):
-
-The application uses an IAM user with programmatic access (access key and secret key) to upload files to S3. Ensure that you have set up your AWS credentials properly in the config.ini file.
-AWS Security:
-
-Always follow best practices for managing AWS keys. Avoid using long-term keys for production and use roles or short-term credentials wherever possible.
-In this project, bucket policies can be used to enforce permissions on the uploaded files. Ensure that your S3 bucket policies and ACLs prevent unwanted public access.
-Configuration
-The agent configuration is handled through a config.ini file:
-
-ini
-Copy code
-[settings]
-screenshot_interval = 5
-screenshot_blur = False
-aws_access_key = YOUR_AWS_ACCESS_KEY
-aws_secret_key = YOUR_AWS_SECRET_KEY
-bucket_name = your-s3-bucket-name
-Configurable Parameters
-screenshot_interval: Time (in minutes) between screenshots.
-screenshot_blur: Boolean value (True or False) to determine if screenshots should be blurred before upload.
-aws_access_key & aws_secret_key: AWS credentials for accessing S3.
-bucket_name: The name of the S3 bucket where the screenshots will be uploaded.
-The agent listens for configuration updates and applies changes in real time.
+VINOVA is a comprehensive Python-based desktop application designed to monitor user activity, capture screenshots, and manage these activities securely. The application periodically captures screenshots, tracks keyboard and mouse activities, checks the battery status, and supports multi-factor authentication (MFA) for secure user login. It integrates with Amazon S3 to store screenshots and includes real-time configuration updates via a Flask-based API.
 
 Project Structure
-bash
-Copy code
-VINOVA/
-│
-├── app.py # Firstly run the server (Python app.py)
-├── main.py # Run the main.py to initialise project
-├── activity_tracker.py # No Need to Run manually. This for user activity tracking
-├── auth_manager.py # No Need to Run manually. Handling Authentication using MFA
-├── battery_manager.py # No Need to Run manually. Manage battery status
-├── config_updater.py # No Need to Run manually. fetch configuration
-├── screenshot_manager.py # No Need to Run manually. Managing --taking screenshot uploading to s3 aws and resize big photo and check blurred screenshot.
-├── time_manager.py # No Need to Run manually. Manages timezone locally and UTC
-└── requirements.txt # List of project dependencies.
-<b>"After successfully logging in with the username 'tyagi' and the password 'test,' enter your email for the OTP. Check your email and enter the OTP to access the UI and see the agent working."</b>
-Code Patterns
-The project follows a modular design with the following patterns:
+main.py: The main GUI application that coordinates activity tracking, screenshot management, authentication, and configuration fetching.
+screenshot_manager.py: Manages the screenshot capturing, AWS S3 uploads, and configuration updates from the Flask API.
+activity_tracker.py: Monitors mouse and keyboard activity in real-time.
+auth_manager.py: Handles multi-factor authentication (MFA) for enhanced security.
+battery_manager.py: Detects low battery status and suspends activity tracking to save power.
+config_updater.py: Fetches real-time configuration settings (like screenshot interval) from the Flask API.
+time_manager.py: Handles the time zone management and logging of current time.
+app.py: Flask backend providing configuration values for screenshot intervals, capture enabling, and blurring.
+Features
+Activity Tracking: Tracks mouse movement and keypress events in real-time.
+Screenshot Capture: Periodically captures screenshots at configurable intervals, with an option to blur for privacy.
+AWS S3 Integration: Automatically uploads screenshots to an Amazon S3 bucket for secure storage. Screenshots are queued for upload if there is no internet connection.
+Configurable Intervals: Fetches screenshot interval, capture enable/disable, and blur settings from a Flask-based API.
+Multi-Factor Authentication (MFA): Secures the application login with MFA, requiring users to enter a one-time password (OTP) sent to their email.
+Battery Detection: Monitors the battery status and automatically suspends activity tracking when the battery is low (below 20%).
+GUI-based Application: Displays logs of the user's activity, screenshots taken, and configuration updates in real-time with an easy-to-use graphical interface.
+Time Zone Management: Logs the current UTC time and converts it to the local time zone, displaying the time information in the application.
+Dependencies
+The following libraries are required to run the project:
 
-Separation of Concerns: Each Python file is responsible for a specific functionality (e.g., tracker.py for tracking, uploader.py for AWS interactions).
-Background Processes: The agent runs in the background, tracking activity and taking screenshots without interrupting the user's workflow.
-Threading: Timezone changes and configuration updates are handled in separate background threads to ensure the main process remains uninterrupted.
-Error Handling: Exception handling is integrated into all file uploads and activities to ensure graceful degradation in case of errors.
-Single Instance Enforcement: A lock file mechanism prevents multiple instances of the agent from running simultaneously.
+boto3: For AWS S3 integration.
+Pillow (PIL): For handling image processing, specifically screenshot capture and display.
+schedule: For scheduling screenshot capture at defined intervals.
+requests: For making HTTP requests to the Flask API.
+psutil: For fetching system and process information.
+tkinter: For building the GUI.
+queue: For managing the upload queue.
+threading: For running background tasks concurrently.
+pyotp: For handling multi-factor authentication.
+pytz: For timezone handling.
+Install Dependencies
+To install the required dependencies, run the following command:
+
+Copy code
+pip install boto3 Pillow schedule requests psutil python-dotenv pyotp pytz
+AWS Credentials Setup
+Before running the application, you need to set up your AWS credentials for boto3 to upload screenshots to your S3 bucket.
+
+Configure AWS credentials using the following command:
+
+Copy code
+aws configure
+This command will prompt you to enter your AWS Access Key ID, Secret Access Key, Region, and Default Output Format.
+
+AWS Credentials File: Ensure that your AWS credentials are correctly set up by adding them to the C:\Users\<YourUsername>\.aws\credentials file:
+
+java
+Copy code
+[default]
+aws_access_key_id = your_access_key_id
+aws_secret_access_key = your_secret_access_key
+Replace your_access_key_id and your_secret_access_key with your actual AWS credentials.
+
+Permissions: Ensure you have the necessary permissions to write to the specified S3 bucket.
+
+Environment Setup
+Flask API: The Flask API serves configuration values for the screenshot intervals, blurring, and capture enabling. To start the Flask server, run:
+Copy code
+python app.py
+The Flask API will run on http://127.0.0.1:5000/get-config and will provide configuration settings for the screenshot manager.
+Multi-Factor Authentication (MFA) Setup
+This project uses multi-factor authentication (MFA) for securing user login. You need to provide a valid username and password, followed by a one-time password (OTP) sent to your email for verification.
+
+Steps for MFA Setup:
+Login: Upon starting the application, you will be prompted for your username, password, and email for OTP.
+Receive OTP: An OTP will be sent to your email, and you must enter it to complete authentication.
 Running the Project
-Prerequisites
-Ensure you have Python 3.x installed on your system. Install the required dependencies by running:
-
-bash
+Start the Flask API:
 Copy code
-pip install -r requirements.txt
-firstly run app.py (using python app.py)
-bash
+python app.py
+Run the Main Application:
+css
 Copy code
 python main.py
-The agent will run in the background, tracking activity and uploading screenshots to the specified S3 bucket. Press Ctrl+C to stop the agent.
+Configuration Settings
+The configuration is fetched from the Flask API and allows real-time updates. The settings that can be configured are:
 
-Error Handling & Resilience
-No Internet Connection: If the internet connection is lost, the agent queues uploads and retries when the connection is restored.
-Firewall Issues: The agent detects when uploads are blocked due to firewall settings and logs relevant errors.
-Abrupt Disconnections: If the agent is stopped abruptly (e.g., power outage), it attempts to recover and resume from where it left off.
-File Integrity: Ensures data is compressed before upload to reduce size and maintain file integrity.
-Security Considerations
-AWS Credentials: Avoid hardcoding AWS credentials directly in your code. Use IAM roles, environment variables, or external configuration files like config.ini.
-Secure Uploads: Data is encrypted during transit to S3 using secure protocols like HTTPS.
-Access Control: Apply strict access controls to your S3 bucket to avoid public access to sensitive data. Ensure that sensitive information is stored securely and appropriately managed.
-License
+Screenshot Interval: How often screenshots are taken (in seconds).
+Blurred Screenshots: Whether screenshots are blurred before saving.
+Capture Enabled: Enable or disable screenshot capturing.
+These configurations are updated every 60 seconds and applied immediately.
+
+
 This project is licensed under the MIT License. See the LICENSE file for details.
